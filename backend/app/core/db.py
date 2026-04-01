@@ -1,9 +1,9 @@
-from sqlmodel import SQLModel, create_engine, Session, select
+﻿from sqlmodel import SQLModel, create_engine, Session, select
 from app.core.config import settings
 from app.core.security import get_password_hash
 from app.models.user import User
 
-engine = create_engine(settings.DATABASE_URL, echo=False)
+engine = create_engine(settings.sqlalchemy_database_url, echo=False)
 
 
 def init_db():
@@ -19,7 +19,7 @@ def init_db():
         existing = session.exec(statement).first()
         if not existing:
             user = User(
-                name="管理者",
+                name="Admin",
                 email="admin@example.com",
                 role="ADMIN",
                 status="ACTIVE",
