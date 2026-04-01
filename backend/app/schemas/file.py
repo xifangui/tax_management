@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class FileCreate(BaseModel):
@@ -19,5 +19,4 @@ class FileRead(BaseModel):
     uploaded_by: int | None = None
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
