@@ -47,8 +47,6 @@ jobs:
         run: npx vite build
 
       - name: Ensure Pages Site
-        if: ${{ env.PAGES_DEPLOY_TOKEN != '' }}
-        continue-on-error: true
         uses: actions/github-script@v7
         with:
           github-token: ${{ env.PAGES_DEPLOY_TOKEN != '' && env.PAGES_DEPLOY_TOKEN || github.token }}
@@ -81,7 +79,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        continue-on-error: true
         with:
           enablement: true
           token: ${{ env.PAGES_DEPLOY_TOKEN != '' && env.PAGES_DEPLOY_TOKEN || github.token }}
