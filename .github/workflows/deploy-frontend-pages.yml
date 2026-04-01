@@ -1,4 +1,4 @@
-name: Deploy Frontend to GitHub Pages
+﻿name: Deploy Frontend to GitHub Pages
 
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
         env:
           VITE_BASE_PATH: /tax_management/
           VITE_API_BASE_URL: ${{ secrets.RENDER_BACKEND_URL }}/api/v1
-        run: npm run build
+        run: npx vite build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
