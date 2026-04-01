@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>税理士向け自動記帳サービス - UI原型</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+    }
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background: #111827;
+      color: #fff;
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      padding: 0 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 16px;
+    }
+    .nav-section {
+      margin-top: 10px;
+    }
+    .nav-title {
+      padding: 8px 24px;
+      font-size: 12px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .nav-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      color: #e5e7eb;
+    }
+    .nav-item.active {
+      background: #1f2937;
+      border-left: 4px solid #3b82f6;
+      padding-left: 20px;
+      font-weight: 600;
+    }
+    .nav-item:hover {
+      background: #1f2937;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      height: 72px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+    .topbar .title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .topbar .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #eef2ff;
+      color: #4338ca;
+    }
+    .user {
+      background: #f3f4f6;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .card h3 {
+      margin: 0 0 16px;
+      font-size: 18px;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .stat .value {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .customer-switch {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    select, input[type="text"], input[type="file"] {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #fff;
+      font-size: 14px;
+    }
+    .btn {
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .btn.success {
+      background: #16a34a;
+    }
+    .btn.warning {
+      background: #f59e0b;
+    }
+
+    .upload-zone {
+      border: 2px dashed #93c5fd;
+      background: #eff6ff;
+      border-radius: 12px;
+      padding: 36px 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .upload-zone .big {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .upload-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      justify-content: center;
+    }
+    .folder-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+    .folder-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .table th, .table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      vertical-align: top;
+    }
+    .table th {
+      background: #f9fafb;
+      color: #374151;
+      font-weight: 600;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status.done { background: #dcfce7; color: #166534; }
+    .status.processing { background: #dbeafe; color: #1d4ed8; }
+    .status.warning { background: #fef3c7; color: #92400e; }
+    .status.error { background: #fee2e2; color: #991b1b; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      font-size: 14px;
+    }
+    .tab.active {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+    .value-box {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #f9fafb;
+      padding: 10px 12px;
+      min-height: 42px;
+      font-size: 14px;
+    }
+
+    .preview {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 16px;
+    }
+    .receipt-preview {
+      height: 300px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fafafa, #f3f4f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .rule-list, .export-list {
+      display: grid;
+      gap: 12px;
+    }
+    .rule-item, .export-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      background: #fafafa;
+    }
+    .rule-item strong, .export-item strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1200px) {
+      .grid-2, .preview {
+        grid-template-columns: 1fr;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">自動記帳サービス</div>
+
+      <div class="nav-section">
+        <div class="nav-title">メイン</div>
+        <div class="nav-item active">ダッシュボード</div>
+        <div class="nav-item">顧客管理</div>
+        <div class="nav-item">ファイルアップロード</div>
+        <div class="nav-item">認識結果一覧</div>
+        <div class="nav-item">異常・人工確認</div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">設定</div>
+        <div class="nav-item">勘定科目設定</div>
+        <div class="nav-item">分類ルール管理</div>
+        <div class="nav-item">CSV出力テンプレート</div>
+        <div class="nav-item">社員管理・権限管理</div>
+        <div class="nav-item">テスト環境</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title">税理士向け自動記帳サービス</div>
+          <div class="muted">紙証憑の自動記帳 / インボイス制度・電子帳簿保存対応</div>
+        </div>
+        <div class="actions">
+          <span class="badge">OCR API連携: 稼働中</span>
+          <span class="badge">テストモード利用可</span>
+          <div class="user">山田会計事務所 / 管理者</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <div class="customer-switch">
+            <div style="min-width: 220px;">
+              <label class="muted">顧客企業を選択</label>
+              <select>
+                <option>株式会社サンプルフード</option>
+                <option>東京建設株式会社</option>
+                <option>ABC小売合同会社</option>
+                <option>テスト企業（課金なし）</option>
+              </select>
+            </div>
+            <button class="btn">顧客切替</button>
+            <button class="btn secondary">新規顧客登録</button>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card stat">
+            <div class="muted">今月アップロード件数</div>
+            <div class="value">2,486</div>
+            <div class="muted">前月比 +12.4%</div>
+          </div>
+          <div class="card stat">
+            <div class="muted">自動認識成功率</div>
+            <div class="value">99.3%</div>
+            <div class="muted">要人工確認 41件</div>
+          </div>
+          <div class="card stat">
+            <div class="muted">CSV出力待ち</div>
+            <div class="value">318</div>
+            <div class="muted">会計ソフト連携用</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>1. ファイルアップロード / ローカルフォルダ読取</h3>
+
+            <div class="upload-zone">
+              <div class="big">ここに領収書・レシート・通帳画像をドラッグ＆ドロップ</div>
+              <div class="muted">単一ファイル / 複数ファイル / フォルダ一括アップロードに対応</div>
+              <div class="upload-actions">
+                <button class="btn">ファイルを選択</button>
+                <button class="btn secondary">複数ファイル選択</button>
+                <button class="btn secondary">フォルダ選択</button>
+                <button class="btn warning">テスト用ディレクトリへ投入</button>
+              </div>
+            </div>
+
+            <div class="folder-box">
+              <h3 style="font-size:16px;margin-top:0;">ローカル指定フォルダ読取</h3>
+              <div class="folder-row">
+                <input type="text" value="C:\company_receipts\2026\03\" />
+                <button class="btn secondary">参照</button>
+                <button class="btn success">読取開始</button>
+              </div>
+              <div class="footer-note">※ 外部クラウド未連携でも、社内ローカルフォルダから票据を一括読取可能</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>アップロード処理状況</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ファイル名</th>
+                  <th>状態</th>
+                  <th>件数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>receipt_batch_0328.zip</td>
+                  <td><span class="status processing">OCR処理中</span></td>
+                  <td>128</td>
+                </tr>
+                <tr>
+                  <td>food_receipts_march/</td>
+                  <td><span class="status done">完了</span></td>
+                  <td>842</td>
+                </tr>
+                <tr>
+                  <td>bank_scan_01.pdf</td>
+                  <td><span class="status warning">一部要確認</span></td>
+                  <td>16</td>
+                </tr>
+                <tr>
+                  <td>blur_sample_test.jpg</td>
+                  <td><span class="status error">認識失敗</span></td>
+                  <td>1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>2. 認識結果一覧 / 異常隔離</h3>
+          <div class="tabs">
+            <div class="tab active">全件</div>
+            <div class="tab">認識成功</div>
+            <div class="tab">要人工確認</div>
+            <div class="tab">異常隔離</div>
+            <div class="tab">テストデータ</div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>受付ID</th>
+                <th>店名 / 会社名</th>
+                <th>登録番号</th>
+                <th>合計金額</th>
+                <th>消費税</th>
+                <th>税率</th>
+                <th>分類科目</th>
+                <th>状態</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>R-20260328-001</td>
+                <td>株式会社サンプルフード / 東京市場店</td>
+                <td>T1234567890123</td>
+                <td>¥12,800</td>
+                <td>¥1,024</td>
+                <td>8%</td>
+                <td>仕入高（食品）</td>
+                <td><span class="status done">自動確定</span></td>
+              </tr>
+              <tr>
+                <td>R-20260328-002</td>
+                <td>居酒屋たろう</td>
+                <td>T9988776655443</td>
+                <td>¥5,600</td>
+                <td>¥509</td>
+                <td>10%</td>
+                <td>会議費</td>
+                <td><span class="status warning">人工確認</span></td>
+              </tr>
+              <tr>
+                <td>R-20260328-003</td>
+                <td>不明</td>
+                <td>未抽出</td>
+                <td>¥0</td>
+                <td>-</td>
+                <td>-</td>
+                <td>未分類</td>
+                <td><span class="status error">異常隔離</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>3. OCR認識詳細 / 人工補正画面</h3>
+          <div class="preview">
+            <div class="receipt-preview">
+              レシート画像プレビュー
+            </div>
+
+            <div>
+              <div class="field-grid">
+                <div class="field">
+                  <label>店名</label>
+                  <div class="value-box">居酒屋たろう</div>
+                </div>
+                <div class="field">
+                  <label>取引会社名</label>
+                  <div class="value-box">株式会社サンプル商事</div>
+                </div>
+                <div class="field">
+                  <label>登録番号</label>
+                  <div class="value-box">T9988776655443</div>
+                </div>
+                <div class="field">
+                  <label>合計金額</label>
+                  <div class="value-box">¥5,600</div>
+                </div>
+                <div class="field">
+                  <label>消費税</label>
+                  <div class="value-box">¥509</div>
+                </div>
+                <div class="field">
+                  <label>税率</label>
+                  <div class="value-box">10%</div>
+                </div>
+                <div class="field">
+                  <label>勘定科目</label>
+                  <div class="value-box">会議費</div>
+                </div>
+                <div class="field">
+                  <label>判定結果</label>
+                  <div class="value-box">文字一部不鮮明のため人工確認推奨</div>
+                </div>
+              </div>
+
+              <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn success">補正して確定</button>
+                <button class="btn secondary">再OCR実行</button>
+                <button class="btn warning">異常隔離へ移動</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>4. 勘定科目・分類ルール設定</h3>
+            <div class="rule-list">
+              <div class="rule-item">
+                <strong>業種: 飲食業</strong>
+                食材購入 → 仕入高 / 原価
+              </div>
+              <div class="rule-item">
+                <strong>業種: 一般企業</strong>
+                飲食店利用 → 会議費 / 交際費
+              </div>
+              <div class="rule-item">
+                <strong>店舗名キーワード</strong>
+                「市場」「スーパー」→ 消耗品費 or 仕入高（顧客設定による）
+              </div>
+            </div>
+            <div style="margin-top:14px;">
+              <button class="btn">ルール追加</button>
+              <button class="btn secondary">業種別一括設定</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>5. CSV出力 / テンプレート管理</h3>
+            <div class="export-list">
+              <div class="export-item">
+                <strong>標準CSVテンプレート（日本会計ソフト向け）</strong>
+                日付 / 店名 / 登録番号 / 金額 / 税額 / 税率 / 勘定科目
+              </div>
+              <div class="export-item">
+                <strong>顧客別カスタムテンプレート</strong>
+                列順・名称・マッピングを自由設定可能
+              </div>
+              <div class="export-item">
+                <strong>フォーマット変換ツール</strong>
+                他社会計ソフト取込形式へ簡易変換
+              </div>
+            </div>
+            <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn success">CSV出力</button>
+              <button class="btn secondary">テンプレート編集</button>
+              <button class="btn secondary">変換ツール起動</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>6. 顧客管理</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>顧客名</th>
+                  <th>業種</th>
+                  <th>状態</th>
+                  <th>テスト環境</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>株式会社サンプルフード</td>
+                  <td>飲食業</td>
+                  <td><span class="status done">有効</span></td>
+                  <td>あり</td>
+                </tr>
+                <tr>
+                  <td>東京建設株式会社</td>
+                  <td>建設業</td>
+                  <td><span class="status done">有効</span></td>
+                  <td>あり</td>
+                </tr>
+                <tr>
+                  <td>ABC小売合同会社</td>
+                  <td>小売業</td>
+                  <td><span class="status warning">初期設定中</span></td>
+                  <td>あり</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>7. 社員管理 / 権限管理</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>氏名</th>
+                  <th>所属</th>
+                  <th>権限</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>山田 太郎</td>
+                  <td>山田会計事務所</td>
+                  <td>管理者</td>
+                  <td>編集 / 削除</td>
+                </tr>
+                <tr>
+                  <td>佐藤 花子</td>
+                  <td>記帳担当</td>
+                  <td>確認者</td>
+                  <td>編集</td>
+                </tr>
+                <tr>
+                  <td>鈴木 一郎</td>
+                  <td>入力担当</td>
+                  <td>一般</td>
+                  <td>編集</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:14px;">
+              <button class="btn">社員追加</button>
+              <button class="btn secondary">権限ロール設定</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
