@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "change-me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
+    # Prefer DATABASE_URL on Render; otherwise build URL from local parts.
+    DATABASE_URL: Optional[str] = None
+
     # PostgreSQL数据库配置
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_USER: str = "postgres"
@@ -16,8 +19,26 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
 
     @property
-    def DATABASE_URL(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+    def sqlalchemy_database_url(self) -> str:
+        url = (
+            self.DATABASE_URL
+            or self.__dict__.get("RENDER_DATABASE_URL")
+            or self.__dict__.get("RENDER_INTERNAL_DATABASE_URL")
+            or self.__dict__.get("POSTGRES_URL")
+        )
+
+        if url:
+            if url.startswith("postgres://"):
+                return url.replace("postgres://", "postgresql://", 1)
+            return url
+
+        if self.ENVIRONMENT.lower() == "production":
+            raise ValueError("DATABASE_URL is not set in production environment")
+
+        return (
+            f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        )
 
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000", "http://127.0.0.1:8000", "http://localhost:5173", "http://127.0.0.1:5173"]
     CORS_ALLOW_CREDENTIALS: bool = True

@@ -3,7 +3,7 @@ from app.core.config import settings
 from app.core.security import get_password_hash
 from app.models.user import User
 
-engine = create_engine(settings.DATABASE_URL, echo=False)
+engine = create_engine(settings.sqlalchemy_database_url, echo=False)
 
 
 def init_db():
