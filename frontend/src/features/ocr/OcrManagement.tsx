@@ -54,7 +54,7 @@ const OcrManagement = ({ defaultTab = 'all' }: OcrManagementProps) => {
     await retryOcrResult(selectedId).unwrap();
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status?: string) => {
     switch (status) {
       case 'APPROVED':
         return { bgcolor: '#dcfce7', color: '#166534' };
@@ -67,7 +67,7 @@ const OcrManagement = ({ defaultTab = 'all' }: OcrManagementProps) => {
     }
   };
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status?: string) => {
     switch (status) {
       case 'APPROVED':
         return '自動確定';
@@ -76,7 +76,7 @@ const OcrManagement = ({ defaultTab = 'all' }: OcrManagementProps) => {
       case 'REJECTED':
         return '異常隔離';
       default:
-        return status;
+        return status || '不明';
     }
   };
 

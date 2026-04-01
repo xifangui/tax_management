@@ -43,8 +43,43 @@ jobs:
           VITE_API_BASE_URL: ${{ secrets.RENDER_BACKEND_URL }}/api/v1
         run: npx vite build
 
+      - name: Ensure Pages Site
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAGES_DEPLOY_TOKEN != '' && secrets.PAGES_DEPLOY_TOKEN || github.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            try {
+              await github.rest.repos.getPages({ owner, repo });
+              core.info('Pages site already exists.');
+            } catch (error) {
+              if (error.status === 404) {
+                core.info('Pages site not found. Creating with build_type=workflow.');
+                await github.rest.repos.createPagesSite({
+                  owner,
+                  repo,
+                  build_type: 'workflow',
+                });
+              } else {
+                throw error;
+              }
+            }
+
+            await github.rest.repos.updateInformationAboutPagesSite({
+              owner,
+              repo,
+              build_type: 'workflow',
+            });
+            core.info('Pages site is configured to build with GitHub Actions.');
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        continue-on-error: true
+        with:
+          enablement: true
+          token: ${{ secrets.PAGES_DEPLOY_TOKEN != '' && secrets.PAGES_DEPLOY_TOKEN || github.token }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

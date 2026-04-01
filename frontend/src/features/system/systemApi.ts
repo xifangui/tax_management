@@ -41,9 +41,9 @@ export interface SystemDashboard {
   };
   ocrTrend?: { date: string; count: number }[];
   ocrStats?: {
-    approved: number;
-    pending: number;
-    rejected: number;
+    approved?: number;
+    pending?: number;
+    rejected?: number;
   };
 }
 

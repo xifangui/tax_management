@@ -45,7 +45,7 @@ const AuditLogs = () => {
     action: action || undefined,
     dateFrom: dateFrom ? format(dateFrom, 'yyyy-MM-dd') : undefined,
     dateTo: dateTo ? format(dateTo, 'yyyy-MM-dd') : undefined,
-  } || {});
+  });
 
   const handleSearch = () => {
     setPage(1);

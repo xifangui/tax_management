@@ -1,5 +1,5 @@
-databases:
-  - name: tax-management-db
+﻿databases:
+  - name: ai-sample-db
     plan: free
 
 services:
@@ -16,7 +16,7 @@ services:
         value: 3.11.9
       - key: DATABASE_URL
         fromDatabase:
-          name: tax-management-db
+          name: ai-sample-db
           property: connectionString
       - key: SECRET_KEY
         generateValue: true

@@ -13,6 +13,18 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Customer', 'File', 'OcrResult', 'User', 'ClassificationRule', 'AccountSubject'],
+  tagTypes: [
+    'Customer',
+    'File',
+    'OcrResult',
+    'User',
+    'ClassificationRule',
+    'AccountSubject',
+    'ExportTemplate',
+    'ExportLog',
+    'SystemDashboard',
+    'SystemSettings',
+    'AuditLog',
+  ],
   endpoints: () => ({}),
 });

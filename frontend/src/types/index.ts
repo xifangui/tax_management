@@ -4,6 +4,7 @@ export interface User {
   email: string;
   role: 'ADMIN' | 'GENERAL';
   status: string;
+  companyName?: string;
 }
 
 export interface Customer {
@@ -34,6 +35,7 @@ export interface OcrResult {
   transaction_date?: string;
   review_status?: string;
   classified_subject_id?: number;
+  account_category?: string;
   raw_text?: string;
   image_url?: string;
 }

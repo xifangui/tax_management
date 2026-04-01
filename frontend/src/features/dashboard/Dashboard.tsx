@@ -150,11 +150,11 @@ const Dashboard = () => {
   }
 
   const lineData = {
-    labels: dashboardData.ocrTrend?.map(item => item.date) || [],
+    labels: dashboardData.ocrTrend?.map((item: { date: string; count: number }) => item.date) || [],
     datasets: [
       {
         label: 'OCR処理件数',
-        data: dashboardData.ocrTrend?.map(item => item.count) || [],
+        data: dashboardData.ocrTrend?.map((item: { date: string; count: number }) => item.count) || [],
         borderColor: '#3f51b5',
         backgroundColor: 'rgba(63, 81, 181, 0.2)',
         fill: true,

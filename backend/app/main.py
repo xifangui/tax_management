@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from fastapi import FastAPI, Request
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,10 +10,21 @@ from app.core.config import settings
 from app.core.db import init_db
 from app.services.scheduler import scheduler
 
+logger = logging.getLogger(__name__)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # アプリケーション起動時
-    init_db()
+    for attempt in range(1, 6):
+        try:
+            init_db()
+            break
+        except Exception:
+            logger.exception("DB初期化に失敗しました (attempt=%s/5)", attempt)
+            if attempt == 5:
+                raise
+            await asyncio.sleep(3)
+
     await scheduler.start()
     yield
     # アプリケーション終了時
@@ -50,7 +63,10 @@ app.add_middleware(
 )
 
 frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
-app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
+if frontend_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
+else:
+    logger.warning("frontendディレクトリが見つからないため、/staticのマウントをスキップします: %s", frontend_dir)
 
 app.include_router(api_router, prefix=f"{settings.API_V1_STR}")
 

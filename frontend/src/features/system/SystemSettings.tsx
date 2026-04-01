@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -33,7 +33,7 @@ const SystemSettings = ({ viewType = 'general' }: SystemSettingsProps) => {
   const [updateSettings, { isLoading: isUpdating }] = useUpdateSystemSettingsMutation();
 
   // 初期値を設定
-  useState(() => {
+  useEffect(() => {
     if (currentSettings && !settings.ocr) {
       setSettings(currentSettings);
     }

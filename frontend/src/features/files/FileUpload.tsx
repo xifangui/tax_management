@@ -201,14 +201,14 @@ const FileUpload = () => {
                 <Button
                   variant="outlined"
                   startIcon={<Description />}
-                  onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
+                  onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement | null)?.click()}
                 >
                   ファイルを選択
                 </Button>
                 <Button
                   variant="outlined"
                   startIcon={<FolderOpen />}
-                  onClick={() => (document.querySelector('input[type="file"][webkitdirectory]') as HTMLInputElement)?.click()}
+                  onClick={() => (document.querySelector('input[type="file"][webkitdirectory]') as HTMLInputElement | null)?.click()}
                 >
                   フォルダ選択
                 </Button>

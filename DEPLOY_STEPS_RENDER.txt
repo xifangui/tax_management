@@ -1,0 +1,47 @@
+Tax Management Deployment Steps (Free Tier)
+
+Stack:
+- Frontend: GitHub Pages (Free)
+- Backend: Render Web Service Free
+- Database: Render PostgreSQL Free (DB name: ai-sample-db)
+
+Prepared files:
+- render.yaml
+- .github/workflows/deploy-backend-render.yml
+- .github/workflows/deploy-frontend-pages.yml
+
+1) Create backend + DB on Render
+1. Login to Render
+2. New -> Blueprint
+3. Select repository: xifangui/tax_management
+4. Deploy from render.yaml
+5. Save backend URL (example: https://tax-management-backend-xxxx.onrender.com)
+
+2) Get Render Deploy Hook
+1. Open backend service in Render
+2. Settings -> Deploy Hook
+3. Copy hook URL
+
+3) Set GitHub Secrets
+Repository: xifangui/tax_management
+Settings -> Secrets and variables -> Actions
+
+Required secrets:
+- RENDER_BACKEND_URL = https://tax-management-backend-xxxx.onrender.com
+- RENDER_DEPLOY_HOOK = <render deploy hook url>
+
+4) Enable GitHub Pages
+1. Settings -> Pages
+2. Source: GitHub Actions
+
+5) Run workflows
+1. Actions -> Deploy Frontend to GitHub Pages -> Run workflow
+2. Actions -> Deploy Backend to Render -> Run workflow
+
+Auto-deploy after setup:
+- Changes in frontend/** -> GitHub Pages deploy
+- Changes in backend/** or render.yaml -> Render deploy
+
+6) Verify
+- Frontend: https://xifangui.github.io/tax_management/
+- Backend health: https://tax-management-backend-xxxx.onrender.com/health
