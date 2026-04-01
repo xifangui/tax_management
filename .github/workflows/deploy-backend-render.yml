@@ -21,5 +21,7 @@ jobs:
             echo "RENDER_DEPLOY_HOOK is not set"
             exit 1
           fi
-          curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
+
+          # Retry for transient network/platform errors.
+          curl --retry 5 --retry-delay 3 --retry-all-errors --fail --show-error --silent -X POST "$RENDER_DEPLOY_HOOK"
           echo "Render deploy triggered"
